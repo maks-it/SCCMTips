@@ -4,8 +4,7 @@ Samle script to dimostrate Configuration Manager Clien Actions invoke thought WM
 
 Author: Maksym Sadovnychyy (Maks-IT)
 Web Site: https://www.maks-it.com
-Project Site: https://github.com/maks-it/SCCMTips
-
+GitHub: https://github.com/maks-it
 #>
 
 function Invoke-CMClientAction {
