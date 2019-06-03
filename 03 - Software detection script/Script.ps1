@@ -1,3 +1,12 @@
+<#
+.SYNOPSIS
+Samle script to dimostrate Configuration Manager Clien Actions invoke thought WMI call
+
+Author: Maksym Sadovnychyy (Maks-IT)
+Web Site: https://www.maks-it.com
+GitHub: https://github.com/maks-it
+#>
+
 #region functions
 function Get-RegValues {
 	param (
@@ -14,6 +23,19 @@ function Get-RegValues {
 	return $result
 }
 
+function New-UserObject {
+	param(
+		[string]$UserSID,
+		[string]$UserName
+	)
+
+	$obj = New-Object -TypeName psobject
+	Add-Member -InputObject $obj -Name "UserSID" -MemberType NoteProperty -Value $UserSID
+	Add-Member -InputObject $obj -Name "UserName" -MemberType NoteProperty -Value $UserName
+
+	return $obj
+}
+
 function Get-UsersFromHiveList {
 	$result = New-Object System.Collections.ArrayList
 
@@ -22,11 +44,7 @@ function Get-UsersFromHiveList {
 			$userSID = $regValue.Name.Split('\')[3]
 			$userName = $regValue.Data.Split('\')[4]
 			
-			$userObj = New-Object -TypeName psobject
-			Add-Member -InputObject $userObj -Name "UserSID" -MemberType NoteProperty -Value $userSID
-			Add-Member -InputObject $userObj -Name "UserName" -MemberType NoteProperty -Value $userName
-			
-			$result.Add($userObj) | Out-Null
+			$result.Add((New-UserObject -UserSID $userSID -UserName $userName)) | Out-Null
 		}
 	}
 
@@ -89,12 +107,10 @@ function Get-Programs {
 	$columnNames = New-Object System.Collections.ArrayList
 	foreach($installedItem in $installedItems) {
 		foreach($regValue in $installedItem.RegValues) {
-			if ($regValue.Name -ne "")
-			{
+			if ($regValue.Name -ne "") {
 				$columnNames.Add($regValue.Name) | Out-Null
 			}
-			else
-			{
+			else {
 				$columnNames.Add("WindowsKB") | Out-Null
 			}
 		}
@@ -168,7 +184,6 @@ function New-SWObject {
 	$obj = New-Object -TypeName psobject
 	Add-Member -InputObject $obj -Name "DispalyName" -MemberType NoteProperty -Value $DisplaName
 	Add-Member -InputObject $obj -Name "DisplayVersion" -MemberType NoteProperty -Value $DisplayVersion
-
 
 	return $obj
 }
